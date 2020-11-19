@@ -5,6 +5,7 @@ let title2 = "in honor of the countdown to";
 let title3 = "Mariah Carey's Christmas";
 
 let mariah;
+let mariahWidth;
 let potato;
 let turkey;
 let mashedP;
@@ -12,16 +13,26 @@ let pie;
 let raisins;
 let chair1, chair2, chair3, chair4;
 
+let yum;
+let buzz;
+
 let clicked = false;
 
 let globe;
 
-let potatoSize = 500;
+let potatoSize;
+
+function preload() {
+  soundFormats('mp3', 'ogg');
+  song = loadSound('xmas.mp3');
+  yum = loadSound('yum.mp3');
+  buzz = loadSound('buzz.mp3');
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  // capture = createCapture(VIDEO);
-  // capture.size(640, 480);
+  capture = createCapture(VIDEO);
+  capture.size(640, 480);
 
 
   mariah = loadImage("mariah1.png");
@@ -41,7 +52,13 @@ function setup() {
 }
 
 function draw() {
+
+  potatoSize = width/5;
+  mariahWidth = width/9;
+
   imageMode(CENTER);
+  
+
   if (!clicked){
 
     background(255,0,0);
@@ -52,29 +69,26 @@ function draw() {
 
     push();
     let pieX1 = width/8;
-    let pieX2 = pieX1+400;
+    let pieX2 = pieX1+potatoSize;
     let pieY1 = height/8*5;
-    let pieY2 = pieY1+600;
+    let pieY2 = pieY1+potatoSize;
+    imageMode(CORNER);
     if(mouseX > pieX1 && mouseX < pieX2 && mouseY > pieY1 && mouseY < pieY2){
-      image(raisins, pieX1, pieY1, 400, 400);
+      image(raisins, pieX1, pieY1, potatoSize, potatoSize);
+      buzz.play();
     }else{
-      image(pie, pieX1, pieY1, 400, 400);
+      image(pie, pieX1, pieY1, potatoSize, potatoSize);
     }
     pop();
 
     push();
-    translate(width/2, height/2);
-    image(ornament, -100, 0, 50, 50);
-    pop();
-
-    push();
     fill(255);
-    textFont(xmasfont, 80);
-    let lineHeight = 140;
-    text(title1+title2, width/8, height/5);
+    textFont(xmasfont, width/25);
+    let lineHeight = height/8;
+    text(title1+title2, 10, height/8);
     //text(title2, width/8, height/5 + lineHeight);
-    textFont(xmasfont, 150);
-    text(title3, width/8, height/5 + lineHeight);
+    textFont(xmasfont, width/15);
+    text(title3, width/4, height/8 + lineHeight);
     pop();
 
     push();
@@ -87,24 +101,31 @@ function draw() {
     translate(width/2, height/2);
     let timer = millis() % 5000;
     rotateY(radians(map(timer, 0, 5000, 0, 360)));
-    image(ornament, -100, 0, 50, 50);
     imageMode(CENTER);
+    noFill();
     //noStroke();
-    // texture(capture);
+    texture(capture);
     // image(capture, 0, 0);
-    sphere(100);
+    sphere(height/8, 50);
+    pop();
+
+    push();
+    imageMode(CENTER);
+    translate(width/2, height/2.8, 110);
+    image(ornament, 0, 0, width/14, height/10);
     pop();
 
     push();
     imageMode(CORNER);
     let potatoX1 = windowWidth/5*3;
     let potatoX2 = potatoX1+600;
-    let potatoY1 = windowHeight/5*2;
-    let potatoY2 = potatoY1+600;
+    let potatoY1 = windowHeight/5*3;
+    let potatoY2 = potatoY1+potatoSize;
     
     
     if(mouseX > potatoX1 && mouseX < potatoX2 && mouseY > potatoY1 && mouseY < potatoY2){
       image(mashedP, potatoX1, potatoY1, potatoSize, potatoSize);
+      yum.play();
     }else{
       image(potato, potatoX1, potatoY1, potatoSize, potatoSize);
     }
@@ -121,7 +142,7 @@ function draw() {
 
 
     push();
-    image(mariah, mouseX-50, mouseY);
+    image(mariah, mouseX-50, mouseY, mariahWidth, mariahWidth*1.5);
     pop();
   }else{
     background(255);
@@ -133,7 +154,7 @@ function draw() {
     image(chair4, windowWidth/2, windowHeight/2, windowWidth/2, windowHeight/2);
 
     imageMode(CENTER);
-    image(mariah, mouseX-50, mouseY);
+    image(mariah, mouseX-50, mouseY, mariahWidth, mariahWidth*1.5);
 
     push();
 
@@ -152,4 +173,13 @@ function draw() {
 function mouseClicked(){
   console.log("got a click");
   clicked = !clicked;
+
+}
+
+function mousePressed() {
+  if (song.isPlaying()) {
+    // .isPlaying() returns a boolean
+  } else {
+    song.play();
+  }
 }
